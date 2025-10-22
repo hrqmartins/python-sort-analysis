@@ -1,9 +1,24 @@
+'''
+INTEGRANTES:
+Henrique Martins - RM 563620
+Henrique Teixeira - RM 563088
+
+Titulo: Personalizado em ASCII ART no site FSymbols.
+IMPORT TIME: Para saber o tempo de execução.
+IMPORT RANDOM: Gerar lista aleatória de números.
+IMPORT MATPLOTLIB: Para gerar gráficos.
+IMPORT OS: Para limpar o terminal.
+'''
+
+# Importações
 import random
 import time
-import sys
 import matplotlib.pyplot as plt
+import os 
 
+# Funções para o estilizar o programa.
 def titulo():
+    print('-=≣ ------------------------------------------------------------------------ ≣=-')
     print('''
 
 ░█████╗░██╗░░░░░░██████╗░░█████╗░██████╗░██╗████████╗███╗░░░███╗░█████╗░░██████╗
@@ -13,43 +28,43 @@ def titulo():
 ██║░░██║███████╗╚██████╔╝╚█████╔╝██║░░██║██║░░░██║░░░██║░╚═╝░██║╚█████╔╝██████╔╝
 ╚═╝░░╚═╝╚══════╝░╚═════╝░░╚════╝░╚═╝░░╚═╝╚═╝░░░╚═╝░░░╚═╝░░░░░╚═╝░╚════╝░╚═════╝░
 ''')
-    print('--------------------------------------------------------------------------------')
+    print('-=≣ ------------------------------------------------------------------------ ≣=-')
 
-# --- Funções Auxiliares (Manipulação de Listas e Arquivos) ---
-def gerar_lista_aleatoria(tamanho):
-    """
-    Gera uma lista de números inteiros aleatórios.
-    O intervalo dos números vai de 0 até o tamanho da lista.
-    """
-    return [random.randint(0, tamanho) for i in range(tamanho)]
+def limpar_terminal():
+    """Limpa o terminal."""
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-def ler_lista_de_arquivo(nome_arquivo):
+# Funções para Manipulação de Listas e Arquivos
+def gerar_lista(tam_lista):
     """
-    Lê uma lista de números a partir de um arquivo de texto,
-    onde cada número está em uma linha.
+    Gera uma lista de números aleatórios de 0 até o tamanho da listq.
+    """
+    return [random.randint(0, tam_lista) for i in range(tam_lista)]
+
+def ler_lista_arq(nome_arq):
+    """
+    Lê uma lista de números a partir de um arquivo de texto.
     """
     try:
-        with open(nome_arquivo, 'r') as f:
+        with open(nome_arq, 'r') as f:
             return [int(line.strip()) for line in f]
     except FileNotFoundError:
-        print(f"Erro: O arquivo '{nome_arquivo}' não foi encontrado.")
+        print(f"[ERRO]: O arquivo '{nome_arq}' não foi encontrado.")
         return None
     except ValueError:
-        print(f"Erro: O arquivo '{nome_arquivo}' contém linhas que não são números inteiros.")
+        print(f"[ERRO]: O arquivo '{nome_arq}' tem linhas que não são números.")
         return None
 
-def salvar_lista_em_arquivo(lista, nome_arquivo):
+def salvar_lista_arq(lista, nome_arq):
     """
-    Salva uma lista de números em um arquivo de texto,
-    com cada número em uma nova linha.
+    Salva uma lista de números em um arquivo de texto.
     """
-    with open(nome_arquivo, 'w') as f:
+    with open(nome_arq, 'w') as f:
         for item in lista:
             f.write(f"{item}\n")
 
-# --- Implementação dos Algoritmos de Ordenação ---
-
-# 1. Bubble Sort - O(n^2)
+# Algoritmos de Ordenação
+# Bubblee Sort
 def bubble_sort(lista):
     n = len(lista)
     for i in range(n):
@@ -59,21 +74,24 @@ def bubble_sort(lista):
                 lista[j], lista[j + 1] = lista[j + 1], lista[j]
                 trocou = True
         if not trocou:
-            break # Otimização: se não houve trocas, a lista já está ordenada
+            break
     return lista
 
-# 2. Selection Sort - O(n^2)
+# Selection Sort
 def selection_sort(lista):
-    n = len(lista)
+    n = len(lista) 
+    
     for i in range(n):
-        min_idx = i
+        indice_minimo = i 
+        
         for j in range(i + 1, n):
-            if lista[j] < lista[min_idx]:
-                min_idx = j
-        lista[i], lista[min_idx] = lista[min_idx], lista[i]
+            if lista[j] < lista[indice_minimo]:
+                    indice_minimo = j 
+                    
+        lista[i], lista[indice_minimo] = lista[indice_minimo], lista[i]
     return lista
 
-# 3. Insertion Sort - O(n^2)
+# Insertion Sort
 def insertion_sort(lista):
     for i in range(1, len(lista)):
         chave = lista[i]
@@ -84,43 +102,47 @@ def insertion_sort(lista):
         lista[j + 1] = chave
     return lista
 
-# 4. Merge Sort - O(n log n)
+# Merge Sort
 def merge_sort(lista):
     if len(lista) > 1:
-        meio = len(lista) // 2
-        esquerda = lista[:meio]
-        direita = lista[meio:]
 
-        merge_sort(esquerda)
-        merge_sort(direita)
+        meio = len(lista) // 2  
+
+        L = lista[:meio] 
+        R = lista[meio:]  
+
+        merge_sort(L)
+        merge_sort(R)
 
         i = j = k = 0
-        while i < len(esquerda) and j < len(direita):
-            if esquerda[i] < direita[j]:
-                lista[k] = esquerda[i]
+
+        while i < len(L) and j < len(R):
+            if L[i] <= R[j]:
+                lista[k] = L[i]
                 i += 1
             else:
-                lista[k] = direita[j]
+                lista[k] = R[j]
                 j += 1
             k += 1
 
-        while i < len(esquerda):
-            lista[k] = esquerda[i]
+        while i < len(L):
+            lista[k] = L[i]
             i += 1
             k += 1
-        while j < len(direita):
-            lista[k] = direita[j]
+
+        while j < len(R):
+            lista[k] = R[j]
             j += 1
             k += 1
     return lista
 
-# --- Funções de Simulação e Geração de Gráficos ---
-def rodar_simulacao():
+
+# Função para a Simulação
+def simulacao():
     """
-    Executa a simulação completa, cronometrando cada algoritmo
-    com diferentes tamanhos de lista e salvando os resultados.
+    Executa a simulação completa, com o tempo decada algoritmo.
     """
-    algoritmos = {
+    algoritmos_ordenacao = {
         "Bubble Sort": bubble_sort,
         "Selection Sort": selection_sort,
         "Insertion Sort": insertion_sort,
@@ -130,24 +152,25 @@ def rodar_simulacao():
     tamanhos_n = [1000, 5000, 10000, 25000, 50000]
     resultados = {}
 
-    print("Iniciando simulação de desempenho. Isso pode levar vários minutos...")
+    print("Começando a Simulação..")
 
-    for nome_algoritmo, funcao_algoritmo in algoritmos.items():
+    for nome_algoritmo in algoritmos_ordenacao:
+        funcao_algoritmo = algoritmos_ordenacao[nome_algoritmo]
         resultados[nome_algoritmo] = {}
-        print(f"\n--- Testando {nome_algoritmo} ---")
+        print(f"\n-=≣ Testando o {nome_algoritmo} ≣=-")
         
         for n in tamanhos_n:
             tempos = []
             print(f"Testando com N = {n}...")
 
             for i in range(3): 
-                lista_teste = gerar_lista_aleatoria(n)
+                lista_teste = gerar_lista(n)
                 
-                start_time = time.time()
-                funcao_algoritmo(lista_teste.copy())
-                end_time = time.time()
+                inicio_tempo = time.time()
+                funcao_algoritmo(lista_teste) 
+                fim_tempo = time.time()
                 
-                tempo_execucao = end_time - start_time
+                tempo_execucao = fim_tempo - inicio_tempo
                 tempos.append(tempo_execucao)
                 print(f"  Amostra {i+1}: {tempo_execucao:.3f} segundos")
             
@@ -161,15 +184,18 @@ def rodar_simulacao():
             
     return resultados
 
+# Função Para o Gráfico
 def gerar_grafico(resultados):
     """
     Gera e salva um gráfico de linha comparando o tempo médio dos algoritmos.
     """
-    print("Gerando gráfico comparativo...")
+    print("Gerando gráfico...")
     
-    # Prepara os dados para o gráfico
-    for nome_algoritmo, dados_n in resultados.items():
+    for nome_algoritmo in resultados:
+        dados_n = resultados[nome_algoritmo]
+        
         x_valores = sorted(dados_n.keys())
+        
         y_valores = [dados_n[n]['media'] for n in x_valores]
         plt.plot(x_valores, y_valores, marker='o', linestyle='-', label=nome_algoritmo)
 
@@ -182,30 +208,32 @@ def gerar_grafico(resultados):
     plt.yscale('log')
     plt.xscale('log')
     
-    # Salva o gráfico em um arquivo
-    nome_arquivo_grafico = 'grafico_desempenho.png'
-    plt.savefig(nome_arquivo_grafico)
-    print(f"\nGráfico comparativo salvo como '{nome_arquivo_grafico}'")
+    # Salvar o gráfico em arquivo
+    nome_arq_grafico = 'grafico.png'
+    plt.savefig(nome_arq_grafico)
+    print(f"\nGráfico salvo como '{nome_arq_grafico}'")
     plt.show() # Fazer o gráfico aparecer no terminal
 
-# --- Função Principal (Menu) ---
+# Programa Principal
 def main():
     """
-    Função principal que exibe o menu e controla o fluxo do programa.
-    """   
+    Função principal que exibe o menu e controla o programa.
+    """ 
     while True:
+        limpar_terminal() 
         titulo()
         print("Menu de Opções:")
-        print(f"\n1. Ordenar lista de um arquivo")
-        print("2. Rodar simulação completa e gerar relatório")
+        print(f"\n1. Ordenar um Arquivo.")
+        print("2. Simulação e Relatório.")
         print("3. Sair")
         
-        escolha = input("Escolha uma opção: ")
+        escolha_usuario = input("Escolha uma opção: ")
 
-        if escolha == '1':
+        if escolha_usuario == '1':
+            limpar_terminal()
             try:
-                arquivo_entrada = input("Digite o nome do arquivo de entrada (ex: entrada.txt): ")
-                arquivo_saida = input("Digite o nome do arquivo de saída (ex: saida.txt): ")
+                arquivo_entrada = input("Digite o nome do arquivo desordenado: ")
+                arquivo_saida = input("Digite o nome do novo arquivo ordenado: ")
                 
                 print("\nAlgoritmos:")
                 print("  1 - Bubble Sort")
@@ -214,44 +242,44 @@ def main():
                 print("  4 - Merge Sort")
                 alg_escolha = input("Escolha o algoritmo (1-4): ")
                 
-                algoritmos_map = {
+                algoritmos_mapa = {
                     '1': ("Bubble Sort", bubble_sort),
                     '2': ("Selection Sort", selection_sort),
                     '3': ("Insertion Sort", insertion_sort),
                     '4': ("Merge Sort", merge_sort),
                 }
                 
-                if alg_escolha not in algoritmos_map:
+                if alg_escolha not in algoritmos_mapa:
                     print("Opção de algoritmo inválida.")
                     continue
                 
-                nome_alg, func_alg = algoritmos_map[alg_escolha]
+                nome_alg, func_alg = algoritmos_mapa[alg_escolha]
                 
-                lista_desordenada = ler_lista_de_arquivo(arquivo_entrada)
+                lista_desordenada = ler_lista_arq(arquivo_entrada)
                 if lista_desordenada is not None:
                     print(f"\nOrdenando {len(lista_desordenada)} itens com {nome_alg}...")
-                    start_time = time.time()
-                    lista_ordenada = func_alg(lista_desordenada)
-                    end_time = time.time()
+                    inicio_tempo = time.time()
+                    lista_ordenada = func_alg(lista_desordenada) 
+                    fim_tempo = time.time()
                     
-                    salvar_lista_em_arquivo(lista_ordenada, arquivo_saida)
+                    salvar_lista_arq(lista_ordenada, arquivo_saida)
                     print(f"Lista ordenada salva em '{arquivo_saida}'.")
-                    print(f"Tempo de execução: {end_time - start_time:.4f} segundos.")
+                    print(f"Tempo de execução: {fim_tempo - inicio_tempo:.3f} segundos.")
 
             except Exception as e:
                 print(f"Ocorreu um erro inesperado: {e}")
 
-        elif escolha == '2':
-            resultados_simulacao = rodar_simulacao()
+        elif escolha_usuario == '2':
+            limpar_terminal()
+            resultados_simulacao = simulacao()
             gerar_grafico(resultados_simulacao)
             print("\nSimulação concluída!")
             
-        elif escolha == '3':
+        elif escolha_usuario == '3':
+            limpar_terminal()
             print("Encerrando o programa...")
             break
         else:
             print("Opção inválida. Por favor, tente novamente.")
 
-# Programa Principal
-if __name__ == "__main__":
-    main()
+main()
